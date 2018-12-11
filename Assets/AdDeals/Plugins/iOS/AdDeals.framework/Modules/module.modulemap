@@ -1,0 +1,11 @@
+framework module AdDeals {
+  umbrella header "AdDeals.h"
+
+  export *
+  module * { export * }
+}
+
+module AdDeals.Swift {
+    header "AdDeals-Swift.h"
+    requires objc
+}
