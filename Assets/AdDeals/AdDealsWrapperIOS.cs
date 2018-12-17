@@ -66,17 +66,17 @@ namespace AdDeals
 #endif
         }
 
-        public static void CacheAdByType(int adKind, string placement, int uiOrientation)
+        public static void CacheAd(int adKind, string placementID, int uiOrientation)
         {
 #if !UNITY_EDITOR
-            AdDeals_cacheAd(adKind, placement, uiOrientation);
+            AdDeals_cacheAd(adKind, placementID, uiOrientation);
 #endif
         }
 
-        public static void ShowPopupAd(int adKind, string placement, int uiOrientation)
+        public static void ShowAd(int adKind, string placementID, int uiOrientation)
         {
 #if !UNITY_EDITOR
-            AdDeals_showAd(adKind, placement, uiOrientation);
+            AdDeals_showAd(adKind, placementID, uiOrientation);
 #endif
         }
 
@@ -226,10 +226,10 @@ namespace AdDeals
         public static extern bool AdDeals_isCacheAdAvailable(int adKind, int uiOrientation);
 
         [DllImport("__Internal")]
-        public static extern void AdDeals_cacheAd(int adKind, string placement, int uiOrientation);
+        public static extern void AdDeals_cacheAd(int adKind, string placementID, int uiOrientation);
 
         [DllImport("__Internal")]
-        public static extern void AdDeals_showAd(int adKind, string placement, int uiOrientation);
+        public static extern void AdDeals_showAd(int adKind, string placementID, int uiOrientation);
 
     }
 }

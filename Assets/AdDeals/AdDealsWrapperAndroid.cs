@@ -64,22 +64,22 @@ namespace AdDeals
 #endif
         }
 
-        public static void CacheAdByType(int adKind, string placement, int uiOrientation)
+        public static void CacheAd(int adKind, string placementID, int uiOrientation)
         {
 #if !UNITY_EDITOR
             using (AndroidJavaClass jc = new AndroidJavaClass(WRAPPER_CLASS))
             {
-                jc.CallStatic("cacheAd", adKind, placement, AdDealsWrapperAndroid.transToAndroidOrientation(uiOrientation));
+                jc.CallStatic("cacheAd", adKind, placementID, AdDealsWrapperAndroid.transToAndroidOrientation(uiOrientation));
             }
 #endif
         }
 
-        public static void ShowPopupAd(int adKind, string placement, int uiOrientation)
+        public static void ShowAd(int adKind, string placementID, int uiOrientation)
         {
 #if !UNITY_EDITOR
             using (AndroidJavaClass jc = new AndroidJavaClass(WRAPPER_CLASS))
             {
-                jc.CallStatic("showAd", adKind, placement, AdDealsWrapperAndroid.transToAndroidOrientation(uiOrientation));
+                jc.CallStatic("showAd", adKind, placementID, AdDealsWrapperAndroid.transToAndroidOrientation(uiOrientation));
             }
 #endif
         }

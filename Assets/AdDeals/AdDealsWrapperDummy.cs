@@ -58,12 +58,12 @@ namespace AdDeals
             AdAvailableEvent.Invoke(adType, false);
         }
 
-        public static void CacheAdByType(int adType, string placement, int uiOrientation)
+        public static void CacheAd(int adType, string placementID, int uiOrientation)
         {
             Debug.Log(DUMMY_NOTE);
         }
 
-        public static void ShowPopupAd(int adType, string placement, int uiOrientation)
+        public static void ShowAd(int adType, string placementID, int uiOrientation)
         {
             Debug.Log(DUMMY_NOTE);
             ShowAdFailedEvent.Invoke(DUMMY_NOTE);

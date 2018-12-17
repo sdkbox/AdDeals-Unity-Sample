@@ -136,9 +136,9 @@ namespace AdDeals
         /// <para> cache ad</para>
         /// </summary>
         /// <param name="adType">adType, 0(WALLAD), 1(FULLSCREENPOPUPAD), 2(REWARDEDVIDEOAD)</param>
-        /// <param name="placement">invalid on UWP platform</param>
+        /// <param name="placementID">in most cases just leave it ""</param>
         /// <param name="uiOrientation">invalid on UWP platform</param>
-        public static void CacheAdByType(int adType, string placement, int uiOrientation)
+        public static void CacheAd(int adType, string placementID, int uiOrientation)
         {
             RunInUWPUIThread(() =>
             {
@@ -160,9 +160,9 @@ namespace AdDeals
         /// <para> show ad</para>
         /// </summary>
         /// <param name="adType">adType, 0(WALLAD), 1(FULLSCREENPOPUPAD), 2(REWARDEDVIDEOAD)</param>
-        /// <param name="placement">invalid on UWP platform</param>
+        /// <param name="placementID">in most cases just leave it ""</param>
         /// <param name="uiOrientation">invalid on UWP platform</param>
-        public static void ShowPopupAd(int adType, string placement, int uiOrientation)
+        public static void ShowAd(int adType, string placementID, int uiOrientation)
         {
             RunInUWPUIThread(() =>
             {

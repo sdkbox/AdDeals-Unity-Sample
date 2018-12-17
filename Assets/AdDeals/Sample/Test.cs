@@ -55,7 +55,7 @@ public class Test : MonoBehaviour {
 
 	public void onButtonCache() {
         log("AdDeals to cache...");
-        AdDeals.AdDealsWrapper.CacheAdByType(adType, "", uiOrientation);
+        AdDeals.AdDealsWrapper.CacheAd(adType, "", uiOrientation);
     }
 
     public void onButtonCheckAvailable()
@@ -66,7 +66,7 @@ public class Test : MonoBehaviour {
 
     public void onButtonShow() {
         log("AdDeals to show...");
-        AdDeals.AdDealsWrapper.ShowPopupAd(adType, "", uiOrientation);
+        AdDeals.AdDealsWrapper.ShowAd(adType, "", uiOrientation);
     }
 
     private void AdDealsEvtAdAvailable(int adType, bool available)
