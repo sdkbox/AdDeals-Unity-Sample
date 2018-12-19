@@ -188,7 +188,7 @@ namespace AdDeals
         private static int transToAndroidOrientation(int i)
         {
             //Android just have two orientation, 0:Portrait, 1:Landscape 
-            if (i < AdDealsWrapperAndroid.UIOrientationLandscapeRight)
+            if (i == AdDealsWrapperAndroid.UIOrientationPortrait)
             {
                 return 0;
             }

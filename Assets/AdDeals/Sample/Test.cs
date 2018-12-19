@@ -10,9 +10,7 @@ public class Test : MonoBehaviour {
     public UnityEngine.UI.Text logText;
     private string logBuffer = "Log:";
     private const int MAX_LOG_LINE = 3;
-
-    private int adType = AdDeals.AdDealsWrapper.AdTypeInterstitial; // 1:FULLSCREENPOPUPAD  2:REWARDEDVIDEOAD
-
+    private string placementID = "";
     private int uiOrientation = AdDeals.AdDealsWrapper.UIOrientationPortrait; // 0:Unknown 1:portrait 2:portraitUpsideDown 3:LandscapeRight 4:LandscapeLeft
 
     // Use this for initialization
@@ -43,32 +41,55 @@ public class Test : MonoBehaviour {
 #else
         AdDeals.AdDealsWrapper.Init("dummy", "dummy");
 #endif
+
     }
 
-    public void onButtonChange() {
-        adType ++;
-        if (adType > 2) {
-            adType = 1;
-        }
-        log("change adType to " + adType);
+    public void onButtonCacheVideo() {
+        log("to cache video");
+        AdDeals.AdDealsWrapper.CacheAd(AdDeals.AdDealsWrapper.AdTypeRewardVideo, placementID, uiOrientation);
     }
-
-	public void onButtonCache() {
-        log("AdDeals to cache...");
-        AdDeals.AdDealsWrapper.CacheAd(adType, "", uiOrientation);
+    public void onButtonShowVideo() {
+        log("to show video");
+        AdDeals.AdDealsWrapper.ShowAd(AdDeals.AdDealsWrapper.AdTypeRewardVideo, placementID, uiOrientation);
     }
-
-    public void onButtonCheckAvailable()
-    {
-        log("AdDeals to check ad avaialbe...");
-        AdDeals.AdDealsWrapper.IsAvailable(adType, uiOrientation);
+    public void onButtonCacheIntistitial() {
+        log("to cache intistitial");
+        AdDeals.AdDealsWrapper.CacheAd(AdDeals.AdDealsWrapper.AdTypeInterstitial, placementID, uiOrientation);
     }
-
-    public void onButtonShow() {
-        log("AdDeals to show...");
-        AdDeals.AdDealsWrapper.ShowAd(adType, "", uiOrientation);
+    public void onButtonShowIntistitial() {
+        log("to show intistitial");
+        AdDeals.AdDealsWrapper.ShowAd(AdDeals.AdDealsWrapper.AdTypeInterstitial, placementID, uiOrientation);
     }
+    public void onButtonSetPlacementID() {
+/*
+ * Windows: AppID #3301 => AdPlacementIDs: 03301001 / 03301002
+ * Android: AppID #3181 => AdPlacementIDs: 03181001 / 03181002
+ * iOS: AppID #3303 => AdPlacementIDs: 03303001 / 03303002
+ *
+ * placementID is an advanced feature and in most cases you can just leave it “”. In case you want to use placementIDs you should contact addeals@ahead-solutions.com
+ *
+ */
 
+#if ENABLE_ADDEALS_UWP
+        placementID = "03301001";
+#elif UNITY_ANDROID
+        placementID = "03181001";
+#elif UNITY_IOS
+        placementID = "03303001";
+#else
+        placementID = "";
+#endif
+
+        log("placementID set to:" + placementID);
+    }
+    public void onButtonSetConsentEU() {
+        //SetConsent after init sdk success
+        AdDeals.AdDealsWrapper.SetConsent(AdDeals.AdDealsWrapper.UserConsentRevoke);
+    }
+    public void onButtonSetConsentNonEU() {
+        //SetConsent after init sdk success
+        AdDeals.AdDealsWrapper.SetConsent(AdDeals.AdDealsWrapper.UserConsentGrant);
+    }
     private void AdDealsEvtAdAvailable(int adType, bool available)
     {
         log("AdDealsEvtAdAvailable " + adType + " " + available);
@@ -113,9 +134,6 @@ public class Test : MonoBehaviour {
     }
     private void AdManagerInitSDKSuccess() {
         log("AdManagerInitSDKSuccess");
-
-        //SetConsent after init sdk success
-        AdDeals.AdDealsWrapper.SetConsent(AdDeals.AdDealsWrapper.UserConsentGrant);
     }
     private void AdManagerInitSDKFailed(string error) {
         log("AdManagerInitSDKFailed:" + error);

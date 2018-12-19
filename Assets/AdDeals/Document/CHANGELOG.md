@@ -1,5 +1,17 @@
 # Change Log
 
+V1.0.0 2018.12.19
+
+1. refactor sample scene
+2. update document
+3. fix android compile on Unity 2018.2
+
+V0.0.7 2018.12.18
+
+1. fix consent
+2. add placementid
+
+---
 V0.0.6 2018.12.17
 
 1. rename API, ~~ShowPopupAd~~ to ShowAd, ~~CacheAdByType~~ to CacheAd

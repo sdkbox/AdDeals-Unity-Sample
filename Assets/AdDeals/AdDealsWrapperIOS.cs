@@ -61,7 +61,7 @@ namespace AdDeals
         public static void IsAvailable(int adType, int uiOrientation)
         {
 #if !UNITY_EDITOR
-            bool b = AdDeals_isCacheAdAvailable(adType, uiOrientation);
+            bool b = AdDeals_isCacheAdAvailable(adType, AdDealsWrapperIOS.transToIOSOrientation(uiOrientation));
             AdDealsWrapperIOS.AdAvailableEvent.Invoke(adType, b);
 #endif
         }
@@ -69,14 +69,14 @@ namespace AdDeals
         public static void CacheAd(int adKind, string placementID, int uiOrientation)
         {
 #if !UNITY_EDITOR
-            AdDeals_cacheAd(adKind, placementID, uiOrientation);
+            AdDeals_cacheAd(adKind, placementID, AdDealsWrapperIOS.transToIOSOrientation(uiOrientation));
 #endif
         }
 
         public static void ShowAd(int adKind, string placementID, int uiOrientation)
         {
 #if !UNITY_EDITOR
-            AdDeals_showAd(adKind, placementID, uiOrientation);
+            AdDeals_showAd(adKind, placementID, AdDealsWrapperIOS.transToIOSOrientation(uiOrientation));
 #endif
         }
 
@@ -89,6 +89,24 @@ namespace AdDeals
                 return;
             }
             dispatcher.Enqueue(action);
+        }
+
+        private static int transToIOSOrientation(int i)
+        {
+            //iOS have five orientation
+            //0:Unknown 1:portrait 2:portraitUpsideDown 3:LandscapeRight 4:LandscapeLeft
+            if (i == AdDealsWrapperIOS.UIOrientationUnknown)
+            {
+                return 0;
+            }
+            else if (i == AdDealsWrapperIOS.UIOrientationPortrait)
+            {
+                return 1;
+            }
+            else
+            {
+                return 3;
+            }
         }
 
 

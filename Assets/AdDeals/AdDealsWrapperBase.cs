@@ -8,9 +8,7 @@ namespace AdDeals
         // 0:Unknown 1:portrait 2:portraitUpsideDown 3:LandscapeRight 4:LandscapeLeft
         public const int UIOrientationUnknown = 0;
         public const int UIOrientationPortrait = 1;
-        public const int UIOrientationPortraitUpsideDown = 2;
-        public const int UIOrientationLandscapeRight = 3;
-        public const int UIOrientationLandscapeLeft = 4;
+        public const int UIOrientationLandscape = 2;
 
         public const int AdTypeInterstitial = 1;
         public const int AdTypeRewardVideo = 2;

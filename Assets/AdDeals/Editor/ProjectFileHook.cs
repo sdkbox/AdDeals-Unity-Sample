@@ -115,7 +115,10 @@ public class ProjectFileHook
         foreach (string line in File.ReadAllLines(path))
         {
             if (line.Contains("compile(name: 'AdDeals', ext:'aar')")
-                || line.Contains("compile(name: 'AdDealsWrapper', ext:'aar')"))
+                || line.Contains("compile(name: 'AdDealsWrapper', ext:'aar')")
+                || line.Contains("implementation(name: 'AdDeals', ext:'aar')")
+                || line.Contains("implementation(name: 'AdDealsWrapper', ext:'aar')")
+                )
             {
                 continue;
             }

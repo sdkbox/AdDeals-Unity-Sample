@@ -14,10 +14,10 @@ System requirements:
 ## Integrate
 
 * In order to get your AppID  & AppKey you must first create an account on http://www.addealsnetwork.com
-* Then add your iOS / Android / Windows 10 apps and you will get 1 AppID / AppKey for each app version. 
-* <font color=#FF0000>Download</font> the AdDeals plugin from either Unity's marketplace(Coming soon), or [sdkbox github repo](https://github.com/sdkbox/AdDeals-Unity-Plugin/raw/master/AdDeals-0.0.5.unitypackage). 
+* Then add your iOS / Android / Windows 10 apps and you will get 1 AppID / AppKey for each app version.
+* <font color=#FF0000>Download</font> the AdDeals plugin from either [Unity Asset Store](http://u3d.as/1p2y), or [SDKBox repo](https://github.com/sdkbox/AdDeals-Unity-Plugin/).
 * Drag `Assets\AdDeals\AdDeals.prefab` onto your game scene.
-* Call AdDeals SDK APIs. Please check out the sample codes in `Assets\AdDeals\Sample\Test.cs`: 
+* Call AdDeals SDK APIs. Please check out the sample codes in `Assets\AdDeals\Sample\Test.cs`:
 ```
 AdDeals.AdDealsWrapper.Init("AppID", "AppKey");
 
@@ -29,7 +29,7 @@ AdDeals.AdDealsWrapper.ShowAd(adType);
 ### Windows UWP build
 
 * Support the lastest AdDeals SDK for Windows:  [AdDealsUniversalSDKW81](https://www.nuget.org/packages/AdDealsUniversalSDKW81).
-* Using .Net ScriptBackend, please export the UWP <font color=#FF0000>project (project)</font> in Unity with the following settings: 
+* Using .Net ScriptBackend, please export the UWP <font color=#FF0000>project (project)</font> in Unity with the following settings:
 
     ![Unity UWP project config](./unity_project_config.png)
 
@@ -43,8 +43,8 @@ AdDeals.AdDealsWrapper.ShowAd(adType);
 
 ### iOS build
 
-* From Unity, first export to an iOS project. Next build and run it using xCode. 
-* Support iOS 8+. 
+* From Unity, first export to an iOS project. Next build and run it using Xcode.
+* Support iOS 8+.
 
 
 ### Android build
@@ -92,41 +92,86 @@ void AdDeals.AdDealsWrapper.SetConsent(int consent);
 void AdDeals.AdDealsWrapper.IsAvailable(int adType, int uiOrientation);
 ```
 * Check availability.
-* `uiOrientation` is invalid on UWP. Set to `AdDealsWrapper.UIOrientationUnknown`. 
+* `uiOrientation` is invalid on UWP. Set to `AdDealsWrapper.UIOrientationUnknown`.
 
 ```
 void AdDeals.AdDealsWrapper.CacheAd(int adType, string placementID, int uiOrientation);
 ```
 * Cache Ad.
 * `placementID` in most cases just leave it "".
-* `uiOrientation` is invalid on UWP, set to `AdDealsWrapper.UIOrientationUnknown`. 
+* `uiOrientation` is invalid on UWP, set to `AdDealsWrapper.UIOrientationUnknown`.
 
 ```
 void AdDeals.AdDealsWrapper.ShowAd(int adType, string placementID, int uiOrientation);
 ```
-* Show Ad. 
+* Show Ad.
 * `placementID` in most cases just leave it "".
 * `uiOrientation` is invalid on UWP, set to `AdDealsWrapper.UIOrientationUnknown`.
 
 
-__Note__: placementID is an advanced feature and in most cases you can just leave it “”. In case you want to use placementIDs you should contact addeals@ahead-solutions.com
+__Note__: placementID is an advanced feature and in most cases you can just leave it "". In case you want to use placementIDs you should contact addeals@ahead-solutions.com
+
+### Callback
+
+follow is all AdDeals callbacks define
+```
+public static event AdAvailableHandler AdAvailableEvent;
+public static event AdEventHandler SDKNotInitializedEvent;
+public static event AdEventHandler ShowAdVideoRewardGrantedEvent;
+public static event AdEventHandler ShowAdSucessEvent;
+public static event AdEventStringHandler ShowAdFailedEvent;
+public static event AdEventHandler CacheAdSuccessEvent;
+public static event AdEventStringHandler CacheAdFailedEvent;
+public static event AdEventHandler MinDelayBtwAdsNotReachedEvent;
+public static event AdEventHandler AdClosedTap;
+public static event AdEventHandler AdClickedTap;
+public static event AdEventHandler AdManagerInitSDKSuccess;
+public static event AdEventStringHandler AdManagerInitSDKFailed;
+public static event AdEventHandler AdManagerConsentSuccess;
+public static event AdEventStringHandler AdManagerConsentFailed;
+public static event AdEventHandler AdManagerAppDownloadSourceDetected;
+public static event AdEventHandler AdManagerAppSessionSourceDetected;
+```
+
+here is a sample to subscribe SDK init success:
+
+* define a function
+```
+void AdManagerInitSDKSuccess() {
+    //addeals init success
+}
+```
+
+* let the upper function subscribe SDK init success event
+```
+AdDeals.AdDealsWrapper.AdManagerInitSDKSuccess += AdManagerInitSDKSuccess;
+```
+
+* when sdk init success, AdManagerInitSDKSuccess will be called.
 
 ### Constants
 
 #### UI Orientation
 ```
-AdDealsWrapper.UIOrientationUnknown = 0;
-AdDealsWrapper.UIOrientationPortrait = 1;
-AdDealsWrapper.UIOrientationPortraitUpsideDown = 2;
-AdDealsWrapper.UIOrientationLandscapeRight = 3;
-AdDealsWrapper.UIOrientationLandscapeLeft = 4;
+AdDealsWrapper.UIOrientationUnknown;
+AdDealsWrapper.UIOrientationPortrait;
+AdDealsWrapper.UIOrientationLandscape;
 ```
 
 #### Ad type
 ```
-AdDealsWrapper.AdTypeInterstitial = 1;
-AdDealsWrapper.AdTypeRewardVideo = 2;
+AdDealsWrapper.AdTypeInterstitial;
+AdDealsWrapper.AdTypeRewardVideo;
 ```
+
+#### Consent
+```
+public const int UserConsentNotApplicable;     // iOS:AdDealsUserConsentNotApplicable:-1 Android:NOT_ELIGIBLE:2
+public const int UserConsentRevoke;             // iOS:AdDealsUserConsentRevoke:0 Android:DISAGREE:1
+public const int UserConsentGrant;              // iOS:AdDealsUserConsentGrant:1 Android:APPROVE:0
+public const int UserConsentNotSet;             // iOS:AdDealsUserConsentNotApplicable:-1 Android:NOT_SET:3
+```
+
 
 
 ## Verification
