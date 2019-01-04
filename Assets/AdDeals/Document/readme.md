@@ -21,7 +21,7 @@ System requirements:
 ```
 AdDeals.AdDealsWrapper.Init("AppID", "AppKey");
 
-int adType = 1; // 1:interstitial 2: reward
+int adType = AdDealsWrapper.AdTypeInterstitial; // 1:interstitial 2: reward
 AdDeals.AdDealsWrapper.ShowAd(adType);
 ```
 
@@ -37,8 +37,7 @@ AdDeals.AdDealsWrapper.ShowAd(adType);
 
     ![Unity UWP capabilities setting](./uwp_capabilities.png)
 
-* For Unity 5.x: because Vistual Studio 2017 is required for UWP application to target aginest the lastest UWP SDK, please make sure to install the [Unity Patch Releases](https://unity3d.com/unity/qa/patch-releases) with UWP support.
-
+* For Unity 5.x: if you want to build UWP application, please use Unity 5.5.4p5 or later. you can download [Unity Patch Releases](https://unity3d.com/unity/qa/patch-releases).
 
 
 ### iOS build
@@ -51,7 +50,7 @@ AdDeals.AdDealsWrapper.ShowAd(adType);
 
 * From Unity, first export the application to a Gradle project. Next build and run it using Android Studio. __Do NOT build APK directly in Unity.__
 
-       ![](./unity_android_export.png)
+    ![](./unity_android_export.png)
 
 * Support Android SDK v15+.
 * For Unity 5.x: please edit `YOUR_EXPORTS_PROTECT_ROOT/build.gradle` with the following configurations:
@@ -78,42 +77,47 @@ AdDeals.AdDealsWrapper.ShowAd(adType);
 ### Methods
 
 
+* Initialize the AdDeals SDK.
+
 ```
 void AdDeals.AdDealsWrapper.Init(String appID, String appKey);
 ```
-* Initialize the AdDeals SDK.
+
+* Set privacy policy consent.
 
 ```
 void AdDeals.AdDealsWrapper.SetConsent(int consent);
 ```
-* Set privacy policy consent.
 
-```
-void AdDeals.AdDealsWrapper.IsAvailable(int adType, int uiOrientation);
-```
 * Check availability.
 * `uiOrientation` is invalid on UWP. Set to `AdDealsWrapper.UIOrientationUnknown`.
 
 ```
+void AdDeals.AdDealsWrapper.CheckAvailable(int adType, int uiOrientation);
+```
+
+* Cache Ad.
+* `placementID` in most cases just leave it "".
+* `uiOrientation` is invalid on UWP, set to `AdDealsWrapper.UIOrientationUnknown`.
+
+```
 void AdDeals.AdDealsWrapper.CacheAd(int adType, string placementID, int uiOrientation);
 ```
-* Cache Ad.
+
+* Show Ad.
 * `placementID` in most cases just leave it "".
 * `uiOrientation` is invalid on UWP, set to `AdDealsWrapper.UIOrientationUnknown`.
 
 ```
 void AdDeals.AdDealsWrapper.ShowAd(int adType, string placementID, int uiOrientation);
 ```
-* Show Ad.
-* `placementID` in most cases just leave it "".
-* `uiOrientation` is invalid on UWP, set to `AdDealsWrapper.UIOrientationUnknown`.
-
 
 __Note__: placementID is an advanced feature and in most cases you can just leave it "". In case you want to use placementIDs you should contact addeals@ahead-solutions.com
 
 ### Callback
 
-follow is all AdDeals callbacks define
+SDK trigers feedback events (callbacks) notifying the client app when action are performed (either by SDK or end user; typically when there is an ad being shown/clicked/closed) or when failures occur. Following is the exhaustive listing of exposed callbacks :
+
 ```
 public static event AdAvailableHandler AdAvailableEvent;
 public static event AdEventHandler SDKNotInitializedEvent;

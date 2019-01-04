@@ -52,7 +52,7 @@ namespace AdDeals
             Debug.Log(DUMMY_NOTE);
         }
 
-        public static void IsAvailable(int adType, int uiOrientation)
+        public static void CheckAvailable(int adType, int uiOrientation)
         {
             Debug.Log(DUMMY_NOTE);
             AdAvailableEvent.Invoke(adType, false);

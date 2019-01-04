@@ -1,5 +1,11 @@
 # Change Log
 
+V1.0.1 2018.1.4
+
+1. rename `IsAvailable` to `CheckAvailable`
+2. update document
+3. update sample scene
+
 V1.0.0 2018.12.19
 
 1. refactor sample scene

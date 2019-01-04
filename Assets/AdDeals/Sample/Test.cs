@@ -52,12 +52,12 @@ public class Test : MonoBehaviour {
         log("to show video");
         AdDeals.AdDealsWrapper.ShowAd(AdDeals.AdDealsWrapper.AdTypeRewardVideo, placementID, uiOrientation);
     }
-    public void onButtonCacheIntistitial() {
-        log("to cache intistitial");
+    public void onButtonCacheInterstitial() {
+        log("to cache interstitial");
         AdDeals.AdDealsWrapper.CacheAd(AdDeals.AdDealsWrapper.AdTypeInterstitial, placementID, uiOrientation);
     }
-    public void onButtonShowIntistitial() {
-        log("to show intistitial");
+    public void onButtonShowInterstitial() {
+        log("to show interstitial");
         AdDeals.AdDealsWrapper.ShowAd(AdDeals.AdDealsWrapper.AdTypeInterstitial, placementID, uiOrientation);
     }
     public void onButtonSetPlacementID() {
@@ -82,13 +82,17 @@ public class Test : MonoBehaviour {
 
         log("placementID set to:" + placementID);
     }
-    public void onButtonSetConsentEU() {
+    public void onButtonSetConsentGrant() {
+        //SetConsent after init sdk success
+        AdDeals.AdDealsWrapper.SetConsent(AdDeals.AdDealsWrapper.UserConsentGrant);
+    }
+    public void onButtonSetConsentRevoke() {
         //SetConsent after init sdk success
         AdDeals.AdDealsWrapper.SetConsent(AdDeals.AdDealsWrapper.UserConsentRevoke);
     }
     public void onButtonSetConsentNonEU() {
         //SetConsent after init sdk success
-        AdDeals.AdDealsWrapper.SetConsent(AdDeals.AdDealsWrapper.UserConsentGrant);
+        AdDeals.AdDealsWrapper.SetConsent(AdDeals.AdDealsWrapper.UserConsentNotApplicable);
     }
     private void AdDealsEvtAdAvailable(int adType, bool available)
     {

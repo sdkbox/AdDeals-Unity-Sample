@@ -103,7 +103,7 @@ namespace AdDeals
         /// </summary>
         /// <param name="adType">adType, 0(WALLAD), 1(FULLSCREENPOPUPAD), 2(REWARDEDVIDEOAD)</param>
         /// <param name="uiOrientation">invalid on UWP platform</param>
-        public static void IsAvailable(int adType, int uiOrientation)
+        public static void CheckAvailable(int adType, int uiOrientation)
         {
             RunInUWPUIThread(() =>
             {
@@ -152,7 +152,14 @@ namespace AdDeals
                 cachePopupAd.MinDelayBtwAdsNotReached += MinDelayBtwAdsNotReached_Event;         // OPTIONAL. This is triggered when you try to call more than 1 ad in a very short period of time (less than 3 sec).
                 cachePopupAd.SDKNotInitialized += SDKNotInitialized_Event;                       // OPTIONAL. This is triggered when youn try to load an ad without initilizing the SDK.
 
-                cachePopupAd.CacheAd();      // CACHING IS OPTIONAL. Should be only called to display ad instantly, for instance after loading an animation. 
+                if (0 == placementID.Length)
+                {
+                    cachePopupAd.CacheAd();
+                }
+                else
+                {
+                    cachePopupAd.CacheAd(placementID);
+                }
              });
         }
 
@@ -179,7 +186,14 @@ namespace AdDeals
                 showAd.SDKNotInitialized += SDKNotInitialized_Event;                       // OPTIONAL. This is triggered when youn try to load an ad without initilizing the SDK.
                 showAd.VideoRewardGranted += ShowAdVideoRewardGranted_Event;               // REQUIRED FOR REWARDED VIDEOS If you want to notify the end user that a video view has been completed.
 
-                showAd.ShowAd();
+                if (0 == placementID.Length)
+                {
+                    showAd.ShowAd();
+                }
+                else
+                {
+                    showAd.ShowAd(placementID);
+                }
             });
         }
 

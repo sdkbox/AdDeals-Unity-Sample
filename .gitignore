@@ -1,4 +1,5 @@
 
+# ignore export project
 .DS_Store
 Exports/
 

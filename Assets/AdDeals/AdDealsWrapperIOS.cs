@@ -58,7 +58,7 @@ namespace AdDeals
 #endif
         }
 
-        public static void IsAvailable(int adType, int uiOrientation)
+        public static void CheckAvailable(int adType, int uiOrientation)
         {
 #if !UNITY_EDITOR
             bool b = AdDeals_isCacheAdAvailable(adType, AdDealsWrapperIOS.transToIOSOrientation(uiOrientation));
