@@ -1,5 +1,9 @@
 # Change Log
 
+V1.0.2 2018.1.9
+
+1. update document
+
 V1.0.1 2018.1.4
 
 1. rename `IsAvailable` to `CheckAvailable`

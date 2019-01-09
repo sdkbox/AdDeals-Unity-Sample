@@ -11,7 +11,7 @@ public class Test : MonoBehaviour {
     private string logBuffer = "Log:";
     private const int MAX_LOG_LINE = 3;
     private string placementID = "";
-    private int uiOrientation = AdDeals.AdDealsWrapper.UIOrientationPortrait; // 0:Unknown 1:portrait 2:portraitUpsideDown 3:LandscapeRight 4:LandscapeLeft
+    private int uiOrientation = AdDeals.AdDealsWrapper.UIOrientationPortrait; // 0:Unknown 1:portrait 2:landscape
 
     // Use this for initialization
     void Start () {
@@ -46,19 +46,19 @@ public class Test : MonoBehaviour {
 
     public void onButtonCacheVideo() {
         log("to cache video");
-        AdDeals.AdDealsWrapper.CacheAd(AdDeals.AdDealsWrapper.AdTypeRewardVideo, placementID, uiOrientation);
+        AdDeals.AdDealsWrapper.CacheAd(AdDeals.AdDealsWrapper.AdTypeRewardedVideo, placementID, uiOrientation);
     }
     public void onButtonShowVideo() {
         log("to show video");
-        AdDeals.AdDealsWrapper.ShowAd(AdDeals.AdDealsWrapper.AdTypeRewardVideo, placementID, uiOrientation);
+        AdDeals.AdDealsWrapper.ShowAd(AdDeals.AdDealsWrapper.AdTypeRewardedVideo, placementID, uiOrientation);
     }
     public void onButtonCacheInterstitial() {
         log("to cache interstitial");
-        AdDeals.AdDealsWrapper.CacheAd(AdDeals.AdDealsWrapper.AdTypeInterstitial, placementID, uiOrientation);
+        AdDeals.AdDealsWrapper.CacheAd(AdDeals.AdDealsWrapper.AdTypeInterstitial, placementID, AdDeals.AdDealsWrapper.UIOrientationUnset);
     }
     public void onButtonShowInterstitial() {
         log("to show interstitial");
-        AdDeals.AdDealsWrapper.ShowAd(AdDeals.AdDealsWrapper.AdTypeInterstitial, placementID, uiOrientation);
+        AdDeals.AdDealsWrapper.ShowAd(AdDeals.AdDealsWrapper.AdTypeInterstitial, placementID, AdDeals.AdDealsWrapper.UIOrientationUnset);
     }
     public void onButtonSetPlacementID() {
 /*

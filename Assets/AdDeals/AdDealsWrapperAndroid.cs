@@ -53,7 +53,7 @@ namespace AdDeals
 #endif
         }
 
-        public static void CheckAvailable(int adType, int uiOrientation)
+        public static void IsAvailable(int adType, int uiOrientation)
         {
 #if !UNITY_EDITOR
             using (AndroidJavaClass jc = new AndroidJavaClass(WRAPPER_CLASS))

@@ -103,7 +103,7 @@ namespace AdDeals
         /// </summary>
         /// <param name="adType">adType, 0(WALLAD), 1(FULLSCREENPOPUPAD), 2(REWARDEDVIDEOAD)</param>
         /// <param name="uiOrientation">invalid on UWP platform</param>
-        public static void CheckAvailable(int adType, int uiOrientation)
+        public static void IsAvailable(int adType, int uiOrientation)
         {
             RunInUWPUIThread(() =>
             {

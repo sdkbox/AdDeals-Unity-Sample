@@ -21,7 +21,7 @@ System requirements:
 ```
 AdDeals.AdDealsWrapper.Init("AppID", "AppKey");
 
-int adType = AdDealsWrapper.AdTypeInterstitial; // 1:interstitial 2: reward
+int adType = AdDealsWrapper.AdTypeInterstitial; // 1:interstitial 2: reward video
 AdDeals.AdDealsWrapper.ShowAd(adType);
 ```
 
@@ -90,27 +90,30 @@ void AdDeals.AdDealsWrapper.SetConsent(int consent);
 ```
 
 * Check availability.
-* `uiOrientation` is invalid on UWP. Set to `AdDealsWrapper.UIOrientationUnknown`.
 
 ```
-void AdDeals.AdDealsWrapper.CheckAvailable(int adType, int uiOrientation);
+void AdDeals.AdDealsWrapper.IsAvailable(int adType, int uiOrientation);
 ```
+
+* `uiOrientation`: when used with adType, lets you indicating if you would prefer getting a video ad whose content is horizontal (most common case) or vertical. Be aware that you aren't giving here a restriction, just a preference. Otherwise, simply pass the AdDealsWrapper.UIOrientationUnset value.
 
 * Cache Ad.
-* `placementID` in most cases just leave it "".
-* `uiOrientation` is invalid on UWP, set to `AdDealsWrapper.UIOrientationUnknown`.
 
 ```
 void AdDeals.AdDealsWrapper.CacheAd(int adType, string placementID, int uiOrientation);
 ```
 
+* `placementID`: optional AdDeals ad placement ID generated for your app (on demand). If not wanted to be used, leave it empty (""). 
+* `uiOrientation`: when used with adType, lets you indicating if you would prefer getting a video ad whose content is horizontal (most common case) or vertical. Be aware that you aren't giving here a restriction, just a preference. Otherwise, simply pass the AdDealsWrapper.UIOrientationUnset value.
+
 * Show Ad.
-* `placementID` in most cases just leave it "".
-* `uiOrientation` is invalid on UWP, set to `AdDealsWrapper.UIOrientationUnknown`.
 
 ```
 void AdDeals.AdDealsWrapper.ShowAd(int adType, string placementID, int uiOrientation);
 ```
+
+* `placementID`: optional AdDeals ad placement ID generated for your app (on demand). If not wanted to be used, leave it empty (""). 
+* `uiOrientation`: when used with adType, lets you indicating if you would prefer getting a video ad whose content is horizontal (most common case) or vertical. Be aware that you aren't giving here a restriction, just a preference. Otherwise, simply pass the AdDealsWrapper.UIOrientationUnset value.
 
 __Note__: placementID is an advanced feature and in most cases you can just leave it "". In case you want to use placementIDs you should contact addeals@ahead-solutions.com
 
@@ -157,7 +160,7 @@ AdDeals.AdDealsWrapper.AdManagerInitSDKSuccess += AdManagerInitSDKSuccess;
 
 #### UI Orientation
 ```
-AdDealsWrapper.UIOrientationUnknown;
+AdDealsWrapper.UIOrientationUnset;
 AdDealsWrapper.UIOrientationPortrait;
 AdDealsWrapper.UIOrientationLandscape;
 ```
@@ -165,7 +168,7 @@ AdDealsWrapper.UIOrientationLandscape;
 #### Ad type
 ```
 AdDealsWrapper.AdTypeInterstitial;
-AdDealsWrapper.AdTypeRewardVideo;
+AdDealsWrapper.AdTypeRewardedVideo;
 ```
 
 #### Consent

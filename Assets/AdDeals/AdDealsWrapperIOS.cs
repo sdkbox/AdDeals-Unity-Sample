@@ -58,7 +58,7 @@ namespace AdDeals
 #endif
         }
 
-        public static void CheckAvailable(int adType, int uiOrientation)
+        public static void IsAvailable(int adType, int uiOrientation)
         {
 #if !UNITY_EDITOR
             bool b = AdDeals_isCacheAdAvailable(adType, AdDealsWrapperIOS.transToIOSOrientation(uiOrientation));
@@ -95,7 +95,7 @@ namespace AdDeals
         {
             //iOS have five orientation
             //0:Unknown 1:portrait 2:portraitUpsideDown 3:LandscapeRight 4:LandscapeLeft
-            if (i == AdDealsWrapperIOS.UIOrientationUnknown)
+            if (i == AdDealsWrapperIOS.UIOrientationUnset)
             {
                 return 0;
             }
