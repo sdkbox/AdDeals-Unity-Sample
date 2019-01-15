@@ -173,10 +173,9 @@ AdDealsWrapper.AdTypeRewardedVideo;
 
 #### Consent
 ```
-public const int UserConsentNotApplicable;     // iOS:AdDealsUserConsentNotApplicable:-1 Android:NOT_ELIGIBLE:2
-public const int UserConsentRevoke;             // iOS:AdDealsUserConsentRevoke:0 Android:DISAGREE:1
-public const int UserConsentGrant;              // iOS:AdDealsUserConsentGrant:1 Android:APPROVE:0
-public const int UserConsentNotSet;             // iOS:AdDealsUserConsentNotApplicable:-1 Android:NOT_SET:3
+public const int UserConsentNotApplicable;
+public const int UserConsentRevoke;
+public const int UserConsentGrant;
 ```
 
 

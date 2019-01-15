@@ -49,10 +49,6 @@ namespace AdDeals
 
         public static void SetConsent(int consent)
         {
-            if (AdDealsWrapperBase.UserConsentNotSet == consent)
-            {
-                consent = AdDealsWrapperBase.UserConsentRevoke;
-            }
 #if !UNITY_EDITOR
             AdDeals_setConsent(consent);
 #endif

@@ -48,7 +48,7 @@ namespace AdDeals
 #if !UNITY_EDITOR
             using (AndroidJavaClass jc = new AndroidJavaClass(WRAPPER_CLASS))
             {
-                jc.CallStatic("setConsent", AdDealsWrapperAndroid.transToAndroidConsent(consent));
+                jc.CallStatic("setConsent", consent);
             }
 #endif
         }
@@ -217,7 +217,6 @@ namespace AdDeals
                     // APPROVE
                     return 0;
                 }
-                case AdDealsWrapperBase.UserConsentNotSet:
                 default:
                 {
                     //NOT_SET

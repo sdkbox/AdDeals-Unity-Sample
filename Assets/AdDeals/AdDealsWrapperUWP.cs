@@ -88,10 +88,6 @@ namespace AdDeals
         /// <param name="consent">consent, -1(NOT_APPLICABLE), 0(REVOKE), 1(GRANT)</param>
         public static void SetConsent(int consent)
         {
-            if (AdDealsWrapperBase.UserConsentNotSet == consent)
-            {
-                consent = AdDealsWrapperBase.UserConsentRevoke;
-            }
             RunInUWPUIThread(() =>
             {
                 AdManager.SetConsent((AdManager.PrivacyPolicyConsent)consent);
