@@ -32,7 +32,7 @@ public class Test : MonoBehaviour {
         AdDeals.AdDealsWrapper.AdManagerAppDownloadSourceDetected += AdManagerAppDownloadSourceDetected;
         AdDeals.AdDealsWrapper.AdManagerAppSessionSourceDetected += AdManagerAppSessionSourceDetected;
 
-#if ENABLE_ADDEALS_UWP
+#if UNITY_WSA
         AdDeals.AdDealsWrapper.Init("3301", "DWXIUHBW0KF7");
 #elif UNITY_ANDROID
         AdDeals.AdDealsWrapper.Init("3181", "69LBY2CITGTJ");
@@ -70,7 +70,7 @@ public class Test : MonoBehaviour {
  *
  */
 
-#if ENABLE_ADDEALS_UWP
+#if UNITY_WSA
         placementID = "03301001";
 #elif UNITY_ANDROID
         placementID = "03181001";

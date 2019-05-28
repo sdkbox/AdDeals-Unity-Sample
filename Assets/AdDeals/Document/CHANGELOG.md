@@ -1,5 +1,13 @@
 # Change Log
 
+V1.1.1 2019.5.27
+
+1. support uwp with il2cpp script backend
+
+V1.1.0 2019.04.16
+
+ 	1. upgrade AdDeals-iOS-SDK-v4.6.4 
+
 V1.0.3 2018.1.15
 
 1. fix consent

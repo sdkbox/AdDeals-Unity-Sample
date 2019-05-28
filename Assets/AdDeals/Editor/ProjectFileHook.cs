@@ -7,10 +7,74 @@ using System.Xml.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+#if UNITY_5_6_OR_NEWER
+using UnityEditor.Build;
+#endif
 using UnityEditor.Callbacks;
 #if UNITY_IOS
     using UnityEditor.iOS.Xcode.Custom;
     using UnityEditor.iOS.Xcode.Custom.Extensions;
+#endif
+
+#if UNITY_5_6_OR_NEWER
+#if UNITY_2018_1_OR_NEWER
+class AdDealsCustomBuildProcessor : IPreprocessBuildWithReport
+#else
+class AdDealsCustomBuildProcessor : IPreprocessBuild
+#endif
+{
+    public int callbackOrder { get { return 0; } }
+    public void OnPreprocessBuild(UnityEditor.Build.Reporting.BuildReport report)
+    {
+        if (BuildTarget.WSAPlayer == report.summary.platform)
+        {
+            restoreSln(report.summary.outputPath);
+            renameCsProject(report.summary.outputPath);
+        }
+    }
+    public void OnPreprocessBuild(BuildTarget target, string path)
+    {
+        if (BuildTarget.WSAPlayer == target)
+        {
+            restoreSln(path);
+            renameCsProject(path);
+        }
+    }
+
+    public void restoreSln(string path)
+    {
+        if (!Directory.Exists(Utils.PathCombine(path, "backup")))
+        {
+            return;
+        }
+        string slnFile = Utils.PathCombine(path, Application.productName + ".sln");
+        if (File.Exists(slnFile))
+        {
+            File.Copy(slnFile, Utils.PathCombine(path, "backup", Application.productName + ".addeals.sln"), true);
+        }
+        string backupSln = Utils.PathCombine(path, "backup", Application.productName + ".sln");
+        if (File.Exists(backupSln))
+        {
+            File.Copy(backupSln, slnFile, true);
+        }
+    }
+
+    private void renameCsProject(string path)
+    {
+        string csFile = Utils.PathCombine(path, Application.productName, Application.productName + ".csproj");
+        if (!File.Exists(csFile))
+        {
+            return;
+        }
+        string newCsFile = Utils.PathCombine(path, Application.productName, Application.productName + ".addeals.csproj");
+        if (File.Exists(newCsFile))
+        {
+            File.Delete(newCsFile);
+        }
+        File.Move(csFile, newCsFile);
+    }
+
+}
 #endif
 
 [InitializeOnLoad]
@@ -21,40 +85,76 @@ public class ProjectFileHook
     {
         if (BuildTarget.WSAPlayer == target)
         {
-            string csProjDir = searchFolder(path + "/GeneratedProjects", "Assembly-CSharp");
-            if (null == csProjDir)
+            //net/il2cpp_xaml/d3d_proj
+            string projType = checkGenerateProjType(path);
+            if (!projType.Contains("xaml"))
             {
-                Debug.Log("ERROR! can't find CS project dir");
+                Debug.Log("ERROR! Must generate project with build type Xaml");
                 return;
             }
-            string csProjFile = searchFile(csProjDir, ".csproj");
-            if (null == csProjFile)
-            {
-                Debug.Log("ERROR! can't find CS project file");
-                return;
-            }
-            addMacroToVSProject(csProjFile, "ENABLE_ADDEALS_UWP;");
 
-            bool hasAddAdDeals = false;
-            string nugetCfg = csProjDir + "/packages.config";
-            if (System.IO.File.Exists(nugetCfg))
-            { // add addealssdk to packages.config if packages.config exist
-                addAdDealsSDKWithXml(nugetCfg);
-                hasAddAdDeals = true;
+            if (projType.Contains("il2cpp"))
+            {
+                if (fixSln(path))
+                {
+                    string addealsCsFile = Utils.PathCombine(path, Application.productName, Application.productName + ".addeals.csproj");
+                    if (File.Exists(addealsCsFile))
+                    {
+                        // addeals cs file exist, so C# project files has copyed, just resotre this file
+                        string csFile = Utils.PathCombine(path, Application.productName, Application.productName + ".csproj");
+                        if (File.Exists(csFile))
+                        {
+                            File.Delete(csFile);
+                        }
+                        File.Move(addealsCsFile, csFile);
+                    }
+                    else
+                    {
+                        copyVSProjectFiles(Utils.PathCombine(Application.dataPath, "AdDeals", "Editor", "WSA", "UWPProjectTemplates.tar.gz"), path);
+                    }
+                }
             }
-            nugetCfg = csProjDir + "/project.json";
-            if (System.IO.File.Exists(nugetCfg))
-            { // add addealssdk to packages.config if project.json exist
-                addAdDealsSDKWithJson(nugetCfg);
-                hasAddAdDeals = true;
-            }
-            if (!hasAddAdDeals)
-            { // both packages.config and project.json does not exist, create default config
+            else if (projType.Contains("net_xaml_proj"))
+            {
+                string csProjDir = searchFolder(path + "/GeneratedProjects", "Assembly-CSharp");
+                if (null == csProjDir)
+                {
+                    Debug.Log("ERROR! can't find CS project dir");
+                    return;
+                }
+                string csProjFile = searchFile(csProjDir, ".csproj");
+                if (null == csProjFile)
+                {
+                    Debug.Log("ERROR! can't find CS project file");
+                    return;
+                }
+                addMacroToVSProject(csProjFile, "ENABLE_ADDEALS_UWP;");
+
+                bool hasAddAdDeals = false;
+                string nugetCfg = csProjDir + "/packages.config";
+                if (System.IO.File.Exists(nugetCfg))
+                { // add addealssdk to packages.config if packages.config exist
+                    addAdDealsSDKWithXml(nugetCfg);
+                    hasAddAdDeals = true;
+                }
+                nugetCfg = csProjDir + "/project.json";
+                if (System.IO.File.Exists(nugetCfg))
+                { // add addealssdk to packages.config if project.json exist
+                    addAdDealsSDKWithJson(nugetCfg);
+                    hasAddAdDeals = true;
+                }
+                if (!hasAddAdDeals)
+                { // both packages.config and project.json does not exist, create default config
 #if UNITY_5
-                addAdDealsSDKWithXml(csProjDir + "/packages.config");
+                    addAdDealsSDKWithXml(csProjDir + "/packages.config");
 #else
-                addAdDealsSDKWithJson(csProjDir + "/project.json");
+                    addAdDealsSDKWithJson(csProjDir + "/project.json");
 #endif
+                }
+            }
+            else
+            {
+                Debug.Log("ERROR! unknow generate project type:" + projType);
             }
         } else if (BuildTarget.Android == target) {
             string buildGradle = path + "/" + Application.productName + "/build.gradle";
@@ -92,7 +192,7 @@ public class ProjectFileHook
         const string defaultLocationInProj = "Frameworks/AdDeals/Plugins/iOS";
         const string exampleFrameworkName = "AdDeals.framework";
 
-        string framework = Path.Combine(defaultLocationInProj, exampleFrameworkName);
+        string framework = Utils.PathCombine(defaultLocationInProj, exampleFrameworkName);
         string fileGuid = pbxProj.AddFile(framework, "Frameworks/" + framework, PBXSourceTree.Sdk);
         PBXProjectExtensions.AddFileToEmbedFrameworks(pbxProj, targetGuid, fileGuid);
         pbxProj.SetBuildProperty(targetGuid, "LD_RUNPATH_SEARCH_PATHS", "$(inherited) @executable_path/Frameworks");
@@ -125,6 +225,142 @@ public class ProjectFileHook
             lines.Add(line);
         }
         File.WriteAllLines(path, lines.ToArray());
+    }
+
+    private static string checkGenerateProjType(string path)
+    {
+        string projType = "";
+        if (null == path)
+        {
+            return projType;
+        }
+        DirectoryInfo dirInfo = new DirectoryInfo(path);
+        if (!dirInfo.Exists)
+        {
+            return projType;
+        }
+
+        if (File.Exists(Utils.PathCombine(path, Application.productName, Application.productName + ".csproj")))
+        {
+            projType += "net";
+        }
+        else if(Directory.Exists(Utils.PathCombine(path, "Il2CppOutputProject")))
+        {
+            projType += "il2cpp";
+        }
+
+        if (File.Exists(Utils.PathCombine(path, Application.productName, "App.xaml")))
+        {
+            projType += "_xaml";
+        }
+        else
+        {
+            projType += "_d3d";
+        }
+
+        foreach(DirectoryInfo folder in dirInfo.GetDirectories())
+        {
+            if ("GeneratedProjects" == folder.Name)
+            {
+                projType += "_proj";
+                break;
+            }
+        }
+
+        return projType;
+    }
+
+    private static bool fixSln(string path)
+    {
+        string slnFile = Utils.PathCombine(path, Application.productName + ".sln");
+        if (!System.IO.File.Exists(slnFile))
+        {
+            Debug.Log("ERROR! can't find sln project file:" + slnFile);
+            return false;
+        }
+
+        string backupFolder = Utils.PathCombine(path, "backup");
+        if (!Directory.Exists(backupFolder))
+        {
+            Directory.CreateDirectory(backupFolder);
+        }
+        //backup sln
+        File.Copy(slnFile, Utils.PathCombine(path, "backup", Application.productName + ".sln"), true);
+
+        List<string> lines = new List<string>();
+        foreach (string line in File.ReadAllLines(slnFile))
+        {
+            if (line.Contains(Application.productName + ".vcxproj"))
+            {
+                string s = string.Format(
+                    "Project(\"{{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}}\") = \"{0}\", \"{0}\\{0}.csproj\", \"{{2FABDF39-A3A3-4497-95BA-5AEE089EBF0F}}\"",
+                    Application.productName);
+                lines.Add(s);
+                continue;
+            }
+            if (line.Contains("Il2CppOutputProject.vcxproj"))
+            {
+                lines.Add(line);
+                lines.Add("EndProject");
+                lines.Add("Project(\"{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}\") = \"IL2CPPToDotNetBridge\", \"IL2CPPToDotNetBridge\\IL2CPPToDotNetBridge.vcxproj\", \"{8815462A-01F9-42BB-8714-107DE929F216}\"");
+                continue;
+            }
+            lines.Add(line);
+        }
+        File.WriteAllLines(slnFile, lines.ToArray());
+
+        return true;
+    }
+
+    private static void copyVSProjectFiles(string gzfile, string path)
+    {
+        string backupFolder = Utils.PathCombine(path, "backup");
+        string backupVSFolder = Utils.PathCombine(backupFolder, "UWPProjectTemplates");
+        if (Directory.Exists(backupVSFolder))
+        {
+            Directory.Delete(backupFolder);
+        }
+        Tar.ExtractTarGz(gzfile, backupFolder);
+
+        var replaceDict = new Dictionary<string, string>();
+        replaceDict.Add("__PH_ProductName__", Application.productName);
+        replaceDict.Add("__PH_Namespace__", Application.productName.Replace(" ", "_"));
+        replaceDict.Add("__PH_Version__", Application.version);
+        replaceDict.Add("__PH_Company__", Application.companyName);
+
+        foreach (string dirPath in Directory.GetDirectories(backupVSFolder, "*", SearchOption.AllDirectories))
+        {
+            string dstFolder = dirPath.Replace(backupVSFolder, path);
+            dstFolder = applyReplace(dstFolder, replaceDict);
+            if (!Directory.Exists(dstFolder))
+            {
+                Directory.CreateDirectory(dstFolder);
+            }
+        }
+
+        //Copy all the files & Replaces any files with the same name
+        foreach (string sourceFile in Directory.GetFiles(backupVSFolder, "*.*", SearchOption.AllDirectories))
+        {
+            string dstFile = sourceFile.Replace(backupVSFolder, path);
+            dstFile = applyReplace(dstFile, replaceDict);
+            string srcContent = File.ReadAllText(sourceFile);
+            srcContent = applyReplace(srcContent, replaceDict);
+            File.WriteAllText(dstFile, srcContent);
+        }
+
+    }
+
+    private static string applyReplace(string content, Dictionary<string, string> replaceSymbols)
+    {
+        foreach (var k in replaceSymbols.Keys)
+        {
+            if (content.Contains(k))
+            {
+                content = content.Replace(k, replaceSymbols[k]);
+            }
+        }
+
+        return content;
     }
 
     private static string searchFile(string path, string target)
