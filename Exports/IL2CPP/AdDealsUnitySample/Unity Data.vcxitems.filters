@@ -142,4 +142,8 @@
       <Filter>Data\Resources</Filter>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="$(OutDir)GameAssembly.dll" />
+    <None Include="$(OutDir)GameAssembly.pdb" />
+  </ItemGroup>
 </Project>

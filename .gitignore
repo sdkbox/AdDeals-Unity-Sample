@@ -1,7 +1,7 @@
 
 # ignore export project
 .DS_Store
-Exports/
+# Exports/
 
 ### Unity ###
 [Ll]ibrary/
