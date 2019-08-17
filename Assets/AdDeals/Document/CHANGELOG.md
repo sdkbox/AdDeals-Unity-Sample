@@ -1,5 +1,14 @@
 # Change Log
 
+V1.1.3 2019.8.12
+
+1. pause untiy when ad is showing on WSA platfrom with dotnet proejct
+
+V1.1.2 2019.7.22
+
+1. pause untiy when ad is showing on WSA platfrom with il2xpp proejct
+2. use ShowAdSuccess/AdClosed event to indicate that ad is showing in sample code
+
 V1.1.1 2019.5.27
 
 1. support uwp with il2cpp script backend

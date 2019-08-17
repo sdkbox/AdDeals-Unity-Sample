@@ -13,6 +13,8 @@ public class Test : MonoBehaviour {
     private string placementID = "";
     private int uiOrientation = AdDeals.AdDealsWrapper.UIOrientationPortrait; // 0:Unknown 1:portrait 2:landscape
 
+    private bool isAdDealsVisible = false;
+
     // Use this for initialization
     void Start () {
         AdDeals.AdDealsWrapper.AdAvailableEvent += AdDealsEvtAdAvailable;
@@ -110,6 +112,7 @@ public class Test : MonoBehaviour {
     }
     private void AdDealsEvtShowAdSucessEvent()
     {
+        isAdDealsVisible = true;
         log("AdDealsEvtShowAdSucessEvent");
     }
     private void AdDealsEvtShowAdFailedEvent(string error)
@@ -130,6 +133,7 @@ public class Test : MonoBehaviour {
     }
     private void AdDealsEvtAdClosedTap()
     {
+        isAdDealsVisible = false;
         log("AdDealsEvtAdClosedTap");
     }
     private void AdDealsEvtAdClickedTap()
@@ -177,5 +181,20 @@ public class Test : MonoBehaviour {
 
     // Update is called once per frame
     void Update () {
+        if (isAdDealsVisible) {
+            // AdDeals is showing, ignore MouseButtonDown/MouseButtonUp/OtherEvent
+            return;
+        }
+        // if (Input.anyKey) {
+        //     Debug.Log("some key press");
+        //     Debug.Log(Input.anyKey);
+        // }
+        if (Input.GetMouseButtonDown(0)) {
+            log("Unity: mouse button down");
+        }
+        if (Input.GetMouseButtonUp(0))
+        {
+            log("Unity: mouse button up");
+        }
     }
 }

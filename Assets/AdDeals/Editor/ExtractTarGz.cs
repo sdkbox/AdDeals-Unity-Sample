@@ -72,7 +72,8 @@ public class Tar
             }
             stream.Seek(24, SeekOrigin.Current);
             stream.Read(buffer, 0, 12);
-            var size = Convert.ToInt64(Encoding.ASCII.GetString(buffer, 0, 12).Trim(), 8);
+            var sizeString = Encoding.ASCII.GetString(buffer, 0, 12).Trim('\0');
+            var size = Convert.ToInt64(sizeString, 8);
 
             stream.Seek(376L, SeekOrigin.Current);
 
