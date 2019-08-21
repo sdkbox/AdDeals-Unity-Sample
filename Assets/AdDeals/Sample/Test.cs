@@ -13,6 +13,8 @@ public class Test : MonoBehaviour {
     private string placementID = "";
     private int uiOrientation = AdDeals.AdDealsWrapper.UIOrientationPortrait; // 0:Unknown 1:portrait 2:landscape
 
+    private bool isAdDealsVisible = false;
+
     // Use this for initialization
     void Start () {
         AdDeals.AdDealsWrapper.AdAvailableEvent += AdDealsEvtAdAvailable;
@@ -94,9 +96,38 @@ public class Test : MonoBehaviour {
         //SetConsent after init sdk success
         AdDeals.AdDealsWrapper.SetConsent(AdDeals.AdDealsWrapper.UserConsentNotApplicable);
     }
-    private void AdDealsEvtAdAvailable(int adType, bool available)
+
+    private void AdDealsEvtAdAvailable(int adType, int uiOrientation, bool available)
     {
-        log("AdDealsEvtAdAvailable " + adType + " " + available);
+        string adTypeStr = string.Empty;
+        string uiOrientationStr = string.Empty;
+        string availableStr = "no ";
+        switch (uiOrientation)
+        {
+            case AdDeals.AdDealsWrapper.UIOrientationPortrait:
+                uiOrientationStr = "PORTRAIT";
+                break;
+            case AdDeals.AdDealsWrapper.UIOrientationLandscape:
+                uiOrientationStr = "LANDSCAPE";
+                break;
+            case AdDeals.AdDealsWrapper.UIOrientationUnset:
+                uiOrientationStr = "UNSET";
+                break;
+        }
+        switch (adType)
+        {
+            case AdDeals.AdDealsWrapper.AdTypeInterstitial:
+                adTypeStr = "INTERSTITIAL";
+                break;
+            case AdDeals.AdDealsWrapper.AdTypeRewardedVideo:
+                adTypeStr = "REWARDED VIDEO";
+                break;
+        }
+        if (available)
+        {
+            availableStr = "1 ";
+        }
+        log("There is " + availableStr + adTypeStr + " ad available for " + uiOrientationStr + " orientation.");
     }
 
     private void AdDealsEvtSDKNotInitializedEvent()
@@ -110,6 +141,7 @@ public class Test : MonoBehaviour {
     }
     private void AdDealsEvtShowAdSucessEvent()
     {
+        isAdDealsVisible = true;
         log("AdDealsEvtShowAdSucessEvent");
     }
     private void AdDealsEvtShowAdFailedEvent(string error)
@@ -130,6 +162,7 @@ public class Test : MonoBehaviour {
     }
     private void AdDealsEvtAdClosedTap()
     {
+        isAdDealsVisible = false;
         log("AdDealsEvtAdClosedTap");
     }
     private void AdDealsEvtAdClickedTap()
@@ -177,5 +210,20 @@ public class Test : MonoBehaviour {
 
     // Update is called once per frame
     void Update () {
+        if (isAdDealsVisible) {
+            // AdDeals is showing, ignore MouseButtonDown/MouseButtonUp/OtherEvent
+            return;
+        }
+        // if (Input.anyKey) {
+        //     Debug.Log("some key press");
+        //     Debug.Log(Input.anyKey);
+        // }
+        if (Input.GetMouseButtonDown(0)) {
+            log("Unity: mouse button down");
+        }
+        if (Input.GetMouseButtonUp(0))
+        {
+            log("Unity: mouse button up");
+        }
     }
 }

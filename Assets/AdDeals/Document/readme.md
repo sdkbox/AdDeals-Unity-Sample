@@ -6,8 +6,8 @@ System requirements:
 
 * Unity v5.5.4.p5 or later
 * Vistual Studio 2017 or later
-* Xcode 10
-* Android Studio 3.2.1
+* Xcode 10 or later
+* Android Studio 3.2.1 or later
 
 
 
@@ -21,7 +21,7 @@ System requirements:
 ```
 AdDeals.AdDealsWrapper.Init("AppID", "AppKey");
 
-int adType = AdDealsWrapper.AdTypeInterstitial; // 1:interstitial 2: reward video
+int adType = AdDealsWrapper.AdTypeInterstitial; // 1:interstitial 2: rewarded video
 AdDeals.AdDealsWrapper.ShowAd(adType);
 ```
 
@@ -37,7 +37,13 @@ AdDeals.AdDealsWrapper.ShowAd(adType);
 
 ![Unity UWP project config](./unity_il2cpp_project_config.png)
 
-* Please enable `InternetClient` setting for UWP under `PlayerSetting`->`Universal Windows Platform`->`Publishing Setting`->`Capabilities`
+* Please enable `InternetClient`.
+
+Unity 2019+ UWP capabilities path: `Project Settings` > `Player` > `Publisher settings` > `Capabilities`.
+
+![Unity UWP capabilities setting](./uwp_capabilities_unity_2019.png)
+
+Unity 5.5+ UWP capabilities path: `PlayerSetting`->`Universal Windows Platform`->`Publishing Setting`->`Capabilities`.
 
 ![Unity UWP capabilities setting](./uwp_capabilities.png)
 
@@ -142,7 +148,7 @@ void AdDeals.AdDealsWrapper.SetConsent(int consent);
 * Check availability.
 
 ```
-void AdDeals.AdDealsWrapper.IsAvailable(int adType, int uiOrientation);
+void AdDeals.AdDealsWrapper.IsCachedAdAvailable(int adType, int uiOrientation);
 ```
 
 * `uiOrientation`: when used with adType, lets you indicating if you would prefer getting a video ad whose content is horizontal (most common case) or vertical. Be aware that you aren't giving here a restriction, just a preference. Otherwise, simply pass the AdDealsWrapper.UIOrientationUnset value.

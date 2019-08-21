@@ -10,7 +10,7 @@ namespace AdDeals
 
     public class AdDealsWrapperAndroid : AdDealsWrapperBase
     {
-        public delegate void AdAvailableHandler(int adType, bool available);
+        public delegate void AdAvailableHandler(int adType, int uiOrientation, bool available);
         public delegate void AdEventHandler();
         public delegate void AdEventStringHandler(string error);
         public delegate void AdEventIntStringHandler(int adType, string error);
@@ -53,13 +53,13 @@ namespace AdDeals
 #endif
         }
 
-        public static void IsAvailable(int adType, int uiOrientation)
+        public static void IsCachedAdAvailable(int adType, int uiOrientation)
         {
 #if !UNITY_EDITOR
             using (AndroidJavaClass jc = new AndroidJavaClass(WRAPPER_CLASS))
             {
                 bool b = jc.CallStatic<bool>("isCacheAdAvailable", adType, AdDealsWrapperAndroid.transToAndroidOrientation(uiOrientation));
-                AdDealsWrapperAndroid.AdAvailableEvent.Invoke(adType, b);
+                AdDealsWrapperAndroid.AdAvailableEvent.Invoke(adType, uiOrientation, b);
             }
 #endif
         }

@@ -15,7 +15,7 @@ namespace AdDeals
 #else
 #pragma warning disable 67
 #endif
-        public delegate void AdAvailableHandler(int adType, bool available);
+        public delegate void AdAvailableHandler(int adType, int uiOrientation, bool available);
         public delegate void AdEventHandler();
         public delegate void AdEventStringHandler(string error);
         public static event AdAvailableHandler AdAvailableEvent;
@@ -52,10 +52,10 @@ namespace AdDeals
             Debug.Log(DUMMY_NOTE);
         }
 
-        public static void IsAvailable(int adType, int uiOrientation)
+        public static void IsCachedAdAvailable(int adType, int uiOrientation)
         {
             Debug.Log(DUMMY_NOTE);
-            AdAvailableEvent.Invoke(adType, false);
+            AdAvailableEvent.Invoke(adType, uiOrientation, false);
         }
 
         public static void CacheAd(int adType, string placementID, int uiOrientation)

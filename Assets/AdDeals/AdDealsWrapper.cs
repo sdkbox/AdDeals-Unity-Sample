@@ -3,10 +3,8 @@ using UnityEngine;
 
 namespace AdDeals
 {
-#if ENABLE_WINMD_SUPPORT && ENABLE_IL2CPP
-    public class AdDealsWrapper : AdDealsWrapperUWPIL2CPP
-#elif ENABLE_ADDEALS_UWP
-    public class AdDealsWrapper : AdDealsWrapperUWPNet
+#if ENABLE_WINMD_SUPPORT
+    public class AdDealsWrapper : AdDealsWrapperUWP
 #elif UNITY_ANDROID
     public class AdDealsWrapper : AdDealsWrapperAndroid
 #elif UNITY_IOS

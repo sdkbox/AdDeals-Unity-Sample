@@ -5,6 +5,7 @@ using System.Text;
 using System.Xml;
 using System.Xml.Linq;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEditor;
 #if UNITY_5_6_OR_NEWER
@@ -92,6 +93,11 @@ public class ProjectFileHook
                 Debug.Log("ERROR! Must generate project with build type Xaml");
                 return;
             }
+            if (projType.Contains("proj"))
+            {
+                Debug.Log("ERROR! dont support debug project");
+                return;
+            }
 
             if (projType.Contains("il2cpp"))
             {
@@ -114,30 +120,26 @@ public class ProjectFileHook
                     }
                 }
             }
-            else if (projType.Contains("net_xaml_proj"))
+            else if (projType.Contains("net"))
             {
-                string csProjDir = searchFolder(path + "/GeneratedProjects", "Assembly-CSharp");
-                if (null == csProjDir)
+                string IL2CPPToDotNetBridgeFolder = Utils.PathCombine(path, "UUBridge");
+                if (!Directory.Exists(IL2CPPToDotNetBridgeFolder))
                 {
-                    Debug.Log("ERROR! can't find CS project dir");
-                    return;
+                    copyProjectFilesForNet(Utils.PathCombine(Application.dataPath, "AdDeals", "Editor", "WSA", "UWPProjectTemplates.tar.gz"), path);
                 }
-                string csProjFile = searchFile(csProjDir, ".csproj");
-                if (null == csProjFile)
-                {
-                    Debug.Log("ERROR! can't find CS project file");
-                    return;
-                }
-                addMacroToVSProject(csProjFile, "ENABLE_ADDEALS_UWP;");
 
+                patchCsProjForNetIf(path);
+                patchMainPageForNetIf(path);
+
+                string mainProj = Utils.PathCombine(path, Application.productName);
                 bool hasAddAdDeals = false;
-                string nugetCfg = csProjDir + "/packages.config";
+                string nugetCfg = mainProj + "/packages.config";
                 if (System.IO.File.Exists(nugetCfg))
                 { // add addealssdk to packages.config if packages.config exist
                     addAdDealsSDKWithXml(nugetCfg);
                     hasAddAdDeals = true;
                 }
-                nugetCfg = csProjDir + "/project.json";
+                nugetCfg = mainProj + "/project.json";
                 if (System.IO.File.Exists(nugetCfg))
                 { // add addealssdk to packages.config if project.json exist
                     addAdDealsSDKWithJson(nugetCfg);
@@ -146,9 +148,9 @@ public class ProjectFileHook
                 if (!hasAddAdDeals)
                 { // both packages.config and project.json does not exist, create default config
 #if UNITY_5
-                    addAdDealsSDKWithXml(csProjDir + "/packages.config");
+                    addAdDealsSDKWithXml(mainProj + "/packages.config");
 #else
-                    addAdDealsSDKWithJson(csProjDir + "/project.json");
+                    addAdDealsSDKWithJson(mainProj + "/project.json");
 #endif
                 }
             }
@@ -279,6 +281,15 @@ public class ProjectFileHook
             return false;
         }
 
+        string[] readLines = File.ReadAllLines(slnFile);
+        foreach (string line in readLines)
+        {
+            if (line.Contains("UUBridge"))
+            {
+                return true;
+            }
+        }
+
         string backupFolder = Utils.PathCombine(path, "backup");
         if (!Directory.Exists(backupFolder))
         {
@@ -287,9 +298,14 @@ public class ProjectFileHook
         //backup sln
         File.Copy(slnFile, Utils.PathCombine(path, "backup", Application.productName + ".sln"), true);
 
+        int lastEndProjectPos = -1;
         List<string> lines = new List<string>();
-        foreach (string line in File.ReadAllLines(slnFile))
+        foreach (string line in readLines)
         {
+            if (lastEndProjectPos >= 0)
+            {
+                lastEndProjectPos ++;
+            }
             if (line.Contains(Application.productName + ".vcxproj"))
             {
                 string s = string.Format(
@@ -298,11 +314,17 @@ public class ProjectFileHook
                 lines.Add(s);
                 continue;
             }
-            if (line.Contains("Il2CppOutputProject.vcxproj"))
+            if (line.Equals("EndProject"))
             {
                 lines.Add(line);
+                lastEndProjectPos = 0;
+                continue;
+            }
+            if (1 == lastEndProjectPos && line.Equals("Global"))
+            {
+                lines.Add("Project(\"{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}\") = \"UUBridge\", \"UUBridge\\UUBridge.vcxproj\", \"{e156c997-d189-438d-9293-d5865ba0991a}\"");
                 lines.Add("EndProject");
-                lines.Add("Project(\"{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}\") = \"IL2CPPToDotNetBridge\", \"IL2CPPToDotNetBridge\\IL2CPPToDotNetBridge.vcxproj\", \"{8815462A-01F9-42BB-8714-107DE929F216}\"");
+                lines.Add(line);
                 continue;
             }
             lines.Add(line);
@@ -312,25 +334,134 @@ public class ProjectFileHook
         return true;
     }
 
-    private static void copyVSProjectFiles(string gzfile, string path)
+    private static bool patchCsProjForNetIf(string path)
+    {
+        string csProjFile = Utils.PathCombine(path, Application.productName, Application.productName + ".csproj");
+        if (!System.IO.File.Exists(csProjFile))
+        {
+            Debug.Log("ERROR! can't find csproj file:" + csProjFile);
+            return false;
+        }
+
+        string csprojSource = File.ReadAllText(csProjFile);
+        Match match1 = Regex.Match(csprojSource, @"\<AllowedReferenceRelatedFileExtensions>(.|\s)*<\/AllowedReferenceRelatedFileExtensions>");
+        if (match1.Success)
+        {
+            csprojSource = csprojSource.Remove(match1.Index, match1.Length);
+        }
+        string[] readLines = Regex.Split(csprojSource, "\r\n|\r|\n");
+        foreach (string line in readLines)
+        {
+            if (line.Contains("AdDealsWrapperUWPNative.cs"))
+            {
+                return true;
+            }
+        }
+
+        string backupFolder = Utils.PathCombine(path, "backup");
+        if (!Directory.Exists(backupFolder))
+        {
+            Directory.CreateDirectory(backupFolder);
+        }
+        //backup csproj
+        File.Copy(csProjFile, Utils.PathCombine(path, "backup", Application.productName + ".csproj"), true);
+
+        List<string> lines = new List<string>();
+        foreach (string line in readLines)
+        {
+            if (line.Contains("App.xaml\""))
+            {
+                lines.Add("<Compile Include=\"AdDealsWrapperUWPNative.cs\" />");
+                lines.Add(line);
+                continue;
+            }
+            lines.Add(line);
+        }
+        File.WriteAllLines(csProjFile, lines.ToArray());
+
+        return true;
+    }
+
+    private static bool patchMainPageForNetIf(string path)
+    {
+        string mainPage = Utils.PathCombine(path, Application.productName, "MainPage.xaml.cs");
+        if (!System.IO.File.Exists(mainPage))
+        {
+            Debug.Log("ERROR! can't find ManiPage file:" + mainPage);
+            return false;
+        }
+        string mainPageSource = File.ReadAllText(mainPage);
+        string patch1 = "SetUWPBridge";
+        string patchSource1 = @"
+        UUBridge.BridgeBootstrapper.SetUWPBridge(new UWPBridge());
+";
+        int pos1 = -1;
+        if (mainPageSource.Contains(patch1))
+        {
+            return true;
+        }
+        Match match1 = Regex.Match(mainPageSource, @"Window\.Current\.SizeChanged\s*\+=\s*onResizeHandler;\s+}");
+
+        if (!match1.Success)
+        {
+            return false;
+        }
+        pos1 = match1.Index + match1.Length;
+
+        int pos2 = mainPageSource.LastIndexOf('}');
+
+        StringBuilder sb = new StringBuilder(mainPageSource.Length + 200);
+        sb.Append(mainPageSource, 0, pos1);
+        sb.Append(patchSource1);
+        sb.Append(mainPageSource, pos1, pos2 - pos1);
+        sb.Append(@"
+    class UWPBridge : UUBridge.IUWPBridge
+    {
+        public void Send(string json)
+        {
+            AdDeals.AdDealsWrapperUWPNative.HandleEvent(json);
+        }
+    }
+
+");
+        sb.Append(mainPageSource, pos2, mainPageSource.Length - pos2);
+
+        //backup mainPage
+        string backupFolder = Utils.PathCombine(path, "backup");
+        if (!Directory.Exists(backupFolder))
+        {
+            Directory.CreateDirectory(backupFolder);
+        }
+        File.Copy(mainPage, Utils.PathCombine(path, "backup", "MainPage.xaml.cs"), true);
+
+        File.WriteAllText(mainPage, sb.ToString());
+
+        return true;
+    }
+
+    private static void extractTarGz(string gzfile, string path)
     {
         string backupFolder = Utils.PathCombine(path, "backup");
         string backupVSFolder = Utils.PathCombine(backupFolder, "UWPProjectTemplates");
         if (Directory.Exists(backupVSFolder))
         {
-            Directory.Delete(backupFolder);
+            Directory.Delete(backupVSFolder, true);
         }
         Tar.ExtractTarGz(gzfile, backupFolder);
+    }
 
+    private static void copyUWPProjectTemplatesProject(string srcFolder, string dstPath)
+    {
         var replaceDict = new Dictionary<string, string>();
         replaceDict.Add("__PH_ProductName__", Application.productName);
         replaceDict.Add("__PH_Namespace__", Application.productName.Replace(" ", "_"));
         replaceDict.Add("__PH_Version__", Application.version);
         replaceDict.Add("__PH_Company__", Application.companyName);
 
-        foreach (string dirPath in Directory.GetDirectories(backupVSFolder, "*", SearchOption.AllDirectories))
+        foreach (string dirPath in Directory.GetDirectories(srcFolder, "*", SearchOption.AllDirectories))
         {
-            string dstFolder = dirPath.Replace(backupVSFolder, path);
+            string dstFolder = dirPath.Replace(srcFolder, dstPath);
+            Debug.Log(dstFolder);
             dstFolder = applyReplace(dstFolder, replaceDict);
             if (!Directory.Exists(dstFolder))
             {
@@ -339,15 +470,31 @@ public class ProjectFileHook
         }
 
         //Copy all the files & Replaces any files with the same name
-        foreach (string sourceFile in Directory.GetFiles(backupVSFolder, "*.*", SearchOption.AllDirectories))
+        foreach (string sourceFile in Directory.GetFiles(srcFolder, "*.*", SearchOption.AllDirectories))
         {
-            string dstFile = sourceFile.Replace(backupVSFolder, path);
+            string dstFile = sourceFile.Replace(srcFolder, dstPath);
             dstFile = applyReplace(dstFile, replaceDict);
             string srcContent = File.ReadAllText(sourceFile);
             srcContent = applyReplace(srcContent, replaceDict);
             File.WriteAllText(dstFile, srcContent);
         }
+    }
 
+    private static void copyProjectFilesForNet(string gzfile, string path)
+    {
+        extractTarGz(gzfile, path);
+        string backupFolder = Utils.PathCombine(path, "backup");
+        string backupVSFolder = Utils.PathCombine(backupFolder, "UWPProjectTemplates");
+        File.Copy(Utils.PathCombine(backupVSFolder, "__PH_ProductName__", "AdDealsWrapperUWPNative.cs"),
+            Utils.PathCombine(path, Application.productName, "AdDealsWrapperUWPNative.cs"));
+    }
+
+    private static void copyVSProjectFiles(string gzfile, string path)
+    {
+        extractTarGz(gzfile, path);
+        string backupFolder = Utils.PathCombine(path, "backup");
+        string backupVSFolder = Utils.PathCombine(backupFolder, "UWPProjectTemplates");
+        copyUWPProjectTemplatesProject(backupVSFolder, path);
     }
 
     private static string applyReplace(string content, Dictionary<string, string> replaceSymbols)

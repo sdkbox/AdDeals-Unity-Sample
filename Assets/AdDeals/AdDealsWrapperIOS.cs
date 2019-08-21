@@ -10,7 +10,7 @@ namespace AdDeals
 
     public class AdDealsWrapperIOS : AdDealsWrapperBase
     {
-        public delegate void AdAvailableHandler(int adType, bool available);
+        public delegate void AdAvailableHandler(int adType, int uiOrientation, bool available);
         public delegate void AdEventHandler();
         public delegate void AdEventStringHandler(string error);
         public delegate void AdEventIntStringHandler(int adType, string error);
@@ -54,11 +54,11 @@ namespace AdDeals
 #endif
         }
 
-        public static void IsAvailable(int adType, int uiOrientation)
+        public static void IsCachedAdAvailable(int adType, int uiOrientation)
         {
 #if !UNITY_EDITOR
             bool b = AdDeals_isCacheAdAvailable(adType, AdDealsWrapperIOS.transToIOSOrientation(uiOrientation));
-            AdDealsWrapperIOS.AdAvailableEvent.Invoke(adType, b);
+            AdDealsWrapperIOS.AdAvailableEvent.Invoke(adType, uiOrientation, b);
 #endif
         }
 

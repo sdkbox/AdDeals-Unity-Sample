@@ -1,4 +1,4 @@
-﻿#if ENABLE_WINMD_SUPPORT && ENABLE_IL2CPP
+﻿#if ENABLE_WINMD_SUPPORT
 
 using System;
 using UnityEngine;
@@ -8,23 +8,23 @@ using Windows.UI.Xaml;
 using Windows.ApplicationModel.Core;
 using Windows.UI.Xaml.Controls;
 
-using IL2CPPToDotNetBridge;
+using UUBridge;
 
 namespace AdDeals
 {
 
-    class IL2CPPBridge : IIL2CPPBridge
+    class UnityBridge : IUnityBridge
     {
         public void Send(string json)
         {
-            AdDealsWrapperUWPIL2CPP.HandleEvent(json);
+            AdDealsWrapperUWP.HandleEvent(json);
         }
     }
 
-    public class AdDealsWrapperUWPIL2CPP : AdDealsWrapperBase
+    public class AdDealsWrapperUWP : AdDealsWrapperBase
     {
         // disable EventHandler not used waring when unity compile
-        public delegate void AdAvailableHandler(int adType, bool available);
+        public delegate void AdAvailableHandler(int adType, int uiOrientation, bool available);
         public delegate void AdEventHandler();
         public delegate void AdEventStringHandler(string error);
         public static event AdAvailableHandler AdAvailableEvent;
@@ -48,11 +48,11 @@ namespace AdDeals
 
         private static void Invoke(string f, params object[] arr)
         {
-            var net = BridgeBootstrapper.GetDotNetBridge();
-            //net = BridgeBootstrapper.GetIL2CPPBridge();
-            if (null == net)
+            var bridge = BridgeBootstrapper.GetUWPBridge();
+            //bridge = BridgeBootstrapper.GetUnityBridge();
+            if (null == bridge)
             {
-                Debug.Log("ERROR! DotNetBridge is null");
+                Debug.Log("ERROR! UWPBridge is null");
                 return;
             }
             JSONObject objP = new JSONObject(JSONObject.Type.ARRAY);
@@ -75,7 +75,7 @@ namespace AdDeals
             JSONObject obj = new JSONObject(JSONObject.Type.OBJECT);
             obj.AddField("f", f);
             obj.AddField("p", objP);
-            net.Send(obj.ToString());
+            bridge.Send(obj.ToString());
         }
 
 
@@ -94,7 +94,7 @@ namespace AdDeals
                 });
                 return;
             }
-            BridgeBootstrapper.SetIL2CPPBridge(new IL2CPPBridge());
+            BridgeBootstrapper.SetUnityBridge(new UnityBridge());
 
             Invoke("Init", appID, appKey);
             hasInit = true;
@@ -114,9 +114,9 @@ namespace AdDeals
         /// </summary>
         /// <param name="adType">adType, 0(WALLAD), 1(FULLSCREENPOPUPAD), 2(REWARDEDVIDEOAD)</param>
         /// <param name="uiOrientation">invalid on UWP platform</param>
-        public static void IsAvailable(int adType, int uiOrientation)
+        public static void IsCachedAdAvailable(int adType, int uiOrientation)
         {
-            Invoke("IsAvailable", adType, uiOrientation);
+            Invoke("IsCachedAdAvailable", adType, uiOrientation);
         }
 
         /// <summary>
@@ -163,82 +163,82 @@ namespace AdDeals
                 {
                     case "AdManagerInitSDKSuccess":
                     {
-                        AdDealsWrapperUWPIL2CPP.AdManagerInitSDKSuccess.Invoke();
+                        AdDealsWrapperUWP.AdManagerInitSDKSuccess.Invoke();
                         break;
                     }
                     case "AdManagerInitSDKFailed":
                     {
-                        AdDealsWrapperUWPIL2CPP.AdManagerInitSDKFailed.Invoke(objP[0].str);
+                        AdDealsWrapperUWP.AdManagerInitSDKFailed.Invoke(objP[0].str);
                         break;
                     }
                     case "AdManagerConsentSuccess":
                     {
-                        AdDealsWrapperUWPIL2CPP.AdManagerConsentSuccess.Invoke();
+                        AdDealsWrapperUWP.AdManagerConsentSuccess.Invoke();
                         break;
                     }
                     case "AdManagerConsentFailed":
                     {
-                        AdDealsWrapperUWPIL2CPP.AdManagerConsentFailed.Invoke(objP[0].str);
+                        AdDealsWrapperUWP.AdManagerConsentFailed.Invoke(objP[0].str);
                         break;
                     }
                     case "AdManagerAppDownloadSourceDetected":
                     {
-                        AdDealsWrapperUWPIL2CPP.AdManagerAppDownloadSourceDetected.Invoke();
+                        AdDealsWrapperUWP.AdManagerAppDownloadSourceDetected.Invoke();
                         break;
                     }
                     case "AdManagerAppSessionSourceDetected":
                     {
-                        AdDealsWrapperUWPIL2CPP.AdManagerAppSessionSourceDetected.Invoke();
+                        AdDealsWrapperUWP.AdManagerAppSessionSourceDetected.Invoke();
                         break;
                     }
                     case "SDKNotInitializedEvent":
                     {
-                        AdDealsWrapperUWPIL2CPP.SDKNotInitializedEvent.Invoke();
+                        AdDealsWrapperUWP.SDKNotInitializedEvent.Invoke();
                         break;
                     }
                     case "ShowAdVideoRewardGrantedEvent":
                     {
-                        AdDealsWrapperUWPIL2CPP.ShowAdVideoRewardGrantedEvent.Invoke();
+                        AdDealsWrapperUWP.ShowAdVideoRewardGrantedEvent.Invoke();
                         break;
                     }
                     case "ShowAdSucessEvent":
                     {
-                        AdDealsWrapperUWPIL2CPP.ShowAdSucessEvent.Invoke();
+                        AdDealsWrapperUWP.ShowAdSucessEvent.Invoke();
                         break;
                     }
                     case "ShowAdFailedEvent":
                     {
-                        AdDealsWrapperUWPIL2CPP.ShowAdFailedEvent.Invoke(objP[0].str);
+                        AdDealsWrapperUWP.ShowAdFailedEvent.Invoke(objP[0].str);
                         break;
                     }
                     case "CacheAdSuccessEvent":
                     {
-                        AdDealsWrapperUWPIL2CPP.CacheAdSuccessEvent.Invoke();
+                        AdDealsWrapperUWP.CacheAdSuccessEvent.Invoke();
                         break;
                     }
                     case "CacheAdFailedEvent":
                     {
-                        AdDealsWrapperUWPIL2CPP.CacheAdFailedEvent.Invoke(objP[0].str);
+                        AdDealsWrapperUWP.CacheAdFailedEvent.Invoke(objP[0].str);
                         break;
                     }
                     case "MinDelayBtwAdsNotReachedEvent":
                     {
-                        AdDealsWrapperUWPIL2CPP.MinDelayBtwAdsNotReachedEvent.Invoke();
+                        AdDealsWrapperUWP.MinDelayBtwAdsNotReachedEvent.Invoke();
                         break;
                     }
                     case "AdClosedTap":
                     {
-                        AdDealsWrapperUWPIL2CPP.AdClosedTap.Invoke();
+                        AdDealsWrapperUWP.AdClosedTap.Invoke();
                         break;
                     }
                     case "AdClickedTap":
                     {
-                        AdDealsWrapperUWPIL2CPP.AdClickedTap.Invoke();
+                        AdDealsWrapperUWP.AdClickedTap.Invoke();
                         break;
                     }
                     case "AdAvailableEvent":
                     {
-                        AdDealsWrapperUWPIL2CPP.AdAvailableEvent.Invoke((int)(objP[0].n), objP[1].b);
+                        AdDealsWrapperUWP.AdAvailableEvent.Invoke((int)(objP[0].n), (int)(objP[1].n), objP[2].b);
                         break;
                     }
                     default:
