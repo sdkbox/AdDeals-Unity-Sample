@@ -29,8 +29,8 @@ namespace AdDeals
         public delegate void AdEventStringHandler(string error);
         public static event AdAvailableHandler AdAvailableEvent;
         public static event AdEventHandler SDKNotInitializedEvent;
-        public static event AdEventHandler ShowAdVideoRewardGrantedEvent;
-        public static event AdEventHandler ShowAdSucessEvent;
+        public static event AdEventHandler ShowAdVideoRewardedGrantedEvent;
+        public static event AdEventHandler ShowAdSuccessEvent;
         public static event AdEventStringHandler ShowAdFailedEvent;
         public static event AdEventHandler CacheAdSuccessEvent;
         public static event AdEventStringHandler CacheAdFailedEvent;
@@ -196,14 +196,14 @@ namespace AdDeals
                         AdDealsWrapperUWP.SDKNotInitializedEvent.Invoke();
                         break;
                     }
-                    case "ShowAdVideoRewardGrantedEvent":
+                    case "ShowAdVideoRewardedGrantedEvent":
                     {
-                        AdDealsWrapperUWP.ShowAdVideoRewardGrantedEvent.Invoke();
+                        AdDealsWrapperUWP.ShowAdVideoRewardedGrantedEvent.Invoke();
                         break;
                     }
-                    case "ShowAdSucessEvent":
+                    case "ShowAdSuccessEvent":
                     {
-                        AdDealsWrapperUWP.ShowAdSucessEvent.Invoke();
+                        AdDealsWrapperUWP.ShowAdSuccessEvent.Invoke();
                         break;
                     }
                     case "ShowAdFailedEvent":
@@ -243,7 +243,7 @@ namespace AdDeals
                     }
                     default:
                     {
-                        Debug.Log("Unknow function name:" + f);
+                        Debug.Log("Unknown function name:" + f);
                         break;
                     }
                 }

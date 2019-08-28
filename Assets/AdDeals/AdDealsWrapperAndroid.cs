@@ -17,8 +17,8 @@ namespace AdDeals
 
         public static event AdAvailableHandler AdAvailableEvent;
         public static event AdEventHandler SDKNotInitializedEvent;
-        public static event AdEventHandler ShowAdVideoRewardGrantedEvent;
-        public static event AdEventHandler ShowAdSucessEvent;
+        public static event AdEventHandler ShowAdVideoRewardedGrantedEvent;
+        public static event AdEventHandler ShowAdSuccessEvent;
         public static event AdEventStringHandler ShowAdFailedEvent;
         public static event AdEventHandler CacheAdSuccessEvent;
         public static event AdEventStringHandler CacheAdFailedEvent;
@@ -122,7 +122,7 @@ namespace AdDeals
 
         public static void NotifyShowInterstitialAdSuccess(string s)
         {
-            AdDealsWrapperAndroid.ShowAdSucessEvent.Invoke();
+            AdDealsWrapperAndroid.ShowAdSuccessEvent.Invoke();
         }
 
         public static void NotifyShowInterstitialAdFailed(string error)
@@ -157,7 +157,7 @@ namespace AdDeals
 
         public static void NotifyShowVideoAdSuccess(string s)
         {
-            AdDealsWrapperAndroid.ShowAdSucessEvent.Invoke();
+            AdDealsWrapperAndroid.ShowAdSuccessEvent.Invoke();
         }
 
         public static void NotifyShowVideoAdFailed(string error)
@@ -182,7 +182,7 @@ namespace AdDeals
 
         public static void NotifyVideoRewardGranted(string s)
         {
-            AdDealsWrapperAndroid.ShowAdVideoRewardGrantedEvent.Invoke();
+            AdDealsWrapperAndroid.ShowAdVideoRewardedGrantedEvent.Invoke();
         }
 
         private static int transToAndroidOrientation(int i)

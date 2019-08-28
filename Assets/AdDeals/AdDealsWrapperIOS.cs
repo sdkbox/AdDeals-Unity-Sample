@@ -17,8 +17,8 @@ namespace AdDeals
 
         public static event AdAvailableHandler AdAvailableEvent;
         public static event AdEventHandler SDKNotInitializedEvent;
-        public static event AdEventHandler ShowAdVideoRewardGrantedEvent;
-        public static event AdEventHandler ShowAdSucessEvent;
+        public static event AdEventHandler ShowAdVideoRewardedGrantedEvent;
+        public static event AdEventHandler ShowAdSuccessEvent;
         public static event AdEventStringHandler ShowAdFailedEvent;
         public static event AdEventHandler CacheAdSuccessEvent;
         public static event AdEventStringHandler CacheAdFailedEvent;
@@ -151,7 +151,7 @@ namespace AdDeals
                     }
                     case "showInterstitialAdSuccess":
                     {
-                        AdDealsWrapperIOS.ShowAdSucessEvent.Invoke();
+                        AdDealsWrapperIOS.ShowAdSuccessEvent.Invoke();
                         break;
                     }
                     case "showInterstitialAdFailed":
@@ -186,7 +186,7 @@ namespace AdDeals
                     }
                     case "showVideoAdSuccess":
                     {
-                        AdDealsWrapperIOS.ShowAdSucessEvent.Invoke();
+                        AdDealsWrapperIOS.ShowAdSuccessEvent.Invoke();
                         break;
                     }
                     case "showVideoAdFailed":
@@ -211,7 +211,7 @@ namespace AdDeals
                     }
                     case "videoRewardGranted":
                     {
-                        AdDealsWrapperIOS.ShowAdVideoRewardGrantedEvent.Invoke();
+                        AdDealsWrapperIOS.ShowAdVideoRewardedGrantedEvent.Invoke();
                         break;
                     }
                     default:

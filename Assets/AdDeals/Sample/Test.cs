@@ -19,8 +19,8 @@ public class Test : MonoBehaviour {
     void Start () {
         AdDeals.AdDealsWrapper.AdAvailableEvent += AdDealsEvtAdAvailable;
         AdDeals.AdDealsWrapper.SDKNotInitializedEvent += AdDealsEvtSDKNotInitializedEvent;
-        AdDeals.AdDealsWrapper.ShowAdVideoRewardGrantedEvent += AdDealsEvtShowAdVideoRewardGrantedEvent;
-        AdDeals.AdDealsWrapper.ShowAdSucessEvent += AdDealsEvtShowAdSucessEvent;
+        AdDeals.AdDealsWrapper.ShowAdVideoRewardedGrantedEvent += AdDealsEvtShowAdVideoRewardedGrantedEvent;
+        AdDeals.AdDealsWrapper.ShowAdSuccessEvent += AdDealsEvtShowAdSuccessEvent;
         AdDeals.AdDealsWrapper.ShowAdFailedEvent += AdDealsEvtShowAdFailedEvent;
         AdDeals.AdDealsWrapper.CacheAdSuccessEvent += AdDealsEvtCacheAdSuccessEvent;
         AdDeals.AdDealsWrapper.CacheAdFailedEvent += AdDealsEvtCacheAdFailedEvent;
@@ -135,14 +135,14 @@ public class Test : MonoBehaviour {
         log("AdDealsEvtSDKNotInitializedEvent");
     }
 
-    private void AdDealsEvtShowAdVideoRewardGrantedEvent()
+    private void AdDealsEvtShowAdVideoRewardedGrantedEvent()
     {
-        log("AdDealsEvtShowAdVideoRewardGrantedEvent");
+        log("AdDealsEvtShowAdVideoRewardedGrantedEvent");
     }
-    private void AdDealsEvtShowAdSucessEvent()
+    private void AdDealsEvtShowAdSuccessEvent()
     {
         isAdDealsVisible = true;
-        log("AdDealsEvtShowAdSucessEvent");
+        log("AdDealsEvtShowAdSuccessEvent");
     }
     private void AdDealsEvtShowAdFailedEvent(string error)
     {
