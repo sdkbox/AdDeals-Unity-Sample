@@ -1,5 +1,9 @@
 # Change Log
 
+V1.1.6 2019.10.28
+
+1. fix Develop build on UWP
+
 V1.1.5 2019.8.28
 
 1. fix various issues
