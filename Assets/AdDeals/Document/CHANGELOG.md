@@ -1,5 +1,14 @@
 # Change Log
 
+V1.1.8 2019.11.5
+
+1. fix integrate `Windows Store Native` document
+2. rename test script Test.cs to AdDealsTest.cs
+
+V1.1.7 2019.11.4
+
+1. add UnityRT project to support c++ plugin
+
 V1.1.6 2019.10.28
 
 1. fix Develop build on UWP

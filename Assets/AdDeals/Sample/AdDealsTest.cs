@@ -4,8 +4,7 @@ using System;
 using System.Linq;
 using UnityEngine;
 
-
-public class Test : MonoBehaviour {
+public class AdDealsTest : MonoBehaviour {
 
     public UnityEngine.UI.Text logText;
     private string logBuffer = "Log:";
@@ -226,4 +225,5 @@ public class Test : MonoBehaviour {
             log("Unity: mouse button up");
         }
     }
+
 }

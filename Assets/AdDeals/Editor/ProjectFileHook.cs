@@ -461,7 +461,6 @@ public class ProjectFileHook
         foreach (string dirPath in Directory.GetDirectories(srcFolder, "*", SearchOption.AllDirectories))
         {
             string dstFolder = dirPath.Replace(srcFolder, dstPath);
-            Debug.Log(dstFolder);
             dstFolder = applyReplace(dstFolder, replaceDict);
             if (!Directory.Exists(dstFolder))
             {
