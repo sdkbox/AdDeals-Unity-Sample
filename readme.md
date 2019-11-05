@@ -5,8 +5,8 @@ this is a [AdDeals](https://www.addealsnetwork.com/) unity sample project.
 ## How to run the project:
 
 * open `Assets/AdDeals/Sample/main.unity`
-* export `iOS` or `Android` or `UWP` project
-* compile with `Xcode` or `Android Studio` or `Visual Studio 2017`
+* export `iOS` / `Android` / `UWP` project
+* compile with `Xcode` / `Android Studio` / `Visual Studio 2017`, or more
 * run
 
 ## More
